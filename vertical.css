@@ -9,7 +9,7 @@ html {
   /* 字元方向：CJK 直立，拉丁/數字維持設計預設（多數瀏覽器為 mixed） */
   text-orientation: mixed;              /* 需要全直立可改 upright */
   line-height: 1.2;
-  font-family: Georgia, serif;
+  font-family: "Heiti TC", "PMingLiU", serif;
   color: #1a1a1a;
 }
 
