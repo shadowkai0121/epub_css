@@ -1,0 +1,197 @@
+/* === Vertical writing base (EPUB/HTML) ===
+ * 參考：CSS Writing Modes、text-orientation、EPUB 3 與 Apple Books 指南
+ * writing-mode 設在根元素，確保各閱讀器套用一致
+ */
+@page { margin: 10px; }
+
+html {
+  writing-mode: vertical-rl;            /* 直排：區塊從右往左流動 */
+  /* 字元方向：CJK 直立，拉丁/數字維持設計預設（多數瀏覽器為 mixed） */
+  text-orientation: mixed;              /* 需要全直立可改 upright */
+  line-height: 1.2;
+  font-family: Georgia, serif;
+  color: #1a1a1a;
+}
+
+/* 直排時，優先用邏輯屬性，避免左右上下語意顛倒 */
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p,
+blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img,
+ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center,
+fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, figure, figcaption, footer, header,
+hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video, ol,
+ul, li, dl, dt, dd {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+
+/* 段落：以邏輯外距表示段落間距（沿著版心流向＝block） */
+p {
+  text-indent: 0;
+  margin-block: 1em;
+  margin-inline: 0;
+  widows: 2;
+  orphans: 2;
+}
+
+/* 超連結顏色維持本色（避免直排下可讀性變差） */
+a, a:visited { color: #1a1a1a; }
+
+/* 圖片在直排時，限制 inline 軸方向寬度；block 軸自動 */
+img {
+  max-inline-size: 100%;
+  height: auto;
+}
+
+/* 上標/下標在直排仍維持語意（位置由 UA 決定） */
+sup { vertical-align: super; font-size: smaller; }
+sub { vertical-align: sub;   font-size: smaller; }
+
+/* 章節標題：用邏輯外距與強制分章（兼容舊屬性） */
+h1 {
+  margin-block: 3em 0;
+  font-size: 2em;
+  line-height: 1.5;
+  break-before: page;
+  page-break-before: always;          /* 舊版相容 */
+}
+h2 {
+  margin-block: 1.5em 0;
+  font-size: 1.5em;
+  line-height: 1.35;
+}
+h3 { margin-block: 1.3em 0; font-size: 1.3em; }
+h4 { margin-block: 1.2em 0; font-size: 1.2em; }
+h5 { margin-block: 1.1em 0; font-size: 1.1em; }
+h6 { font-size: 1em; }
+
+h1, h2, h3, h4, h5, h6 {
+  text-indent: 0;
+  text-align: start;                  /* 以直排的起始邊對齊（右側） */
+  font-weight: bold;
+  break-inside: avoid;
+  page-break-after: avoid;            /* 舊版相容 */
+}
+
+/* 清單與縮排：使用邏輯外距，避免左右混亂 */
+ol, ul { margin-block-start: 1em; margin-inline-start: 1.7em; }
+li > ol, li > ul { margin-block-start: 0; }
+blockquote { margin-block: 1em; margin-inline-start: 1.7em; }
+
+/* 直排下的程式碼：可讀性優先，切回水平排版並允許橫向捲動 */
+code, pre, .sourceCode, table {
+  writing-mode: horizontal-tb;        /* 這些內容維持橫排 */
+}
+
+code {
+  font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+  font-size: 85%;
+  margin: 0;
+  hyphens: manual;
+  white-space: pre-wrap;
+}
+pre {
+  margin-block: 1em;
+  overflow: auto;                     /* 需要時橫向捲動 */
+}
+pre code {
+  padding: 0;
+  overflow: visible;
+  overflow-wrap: normal;
+}
+.sourceCode {
+  background-color: transparent;
+  overflow: visible;
+}
+
+/* 分隔線沿直排版心方向的長度與外距 */
+hr {
+  background-color: #1a1a1a;
+  border: none;
+  inline-size: 1px;
+  block-size: 1em;
+  margin-block: 1em;
+}
+
+/* 表格在直排下多半仍以橫排閱讀：給捲動與寬度限制 */
+table {
+  margin-block: 1em;
+  border-collapse: collapse;
+  width: 100%;
+  overflow-x: auto;
+  display: block;
+}
+table caption { margin-block-end: 0.75em; }
+tbody {
+  margin-block-start: 0.5em;
+  border-block: 1px solid #1a1a1a;
+}
+th, td { padding: 0.25em 0.5em; }
+th { border-block-start: 1px solid #1a1a1a; }
+
+/* 首頁區塊（書名、作者） */
+header { margin-block-end: 4em; text-align: center; }
+h1.title {}
+p.author {}
+p.date {}
+
+/* 目錄（TOC） */
+#TOC li { list-style: none; }
+#TOC ul { padding-inline-start: 1.3em; }
+#TOC > ul { padding-inline-start: 0; }
+#TOC a:not(:hover) { text-decoration: none; }
+
+/* 小型資本字（如有） */
+span.smallcaps { font-variant: small-caps; }
+
+/* 兩欄版型（罕見於直排，但保留範例，使用 inline 尺寸） */
+div.column { display: inline-block; vertical-align: top; inline-size: 50%; }
+/* 若有 flex 欄位，可依需要啟用並改用邏輯間距
+div.columns { display: flex; gap: min(4vw, 1.5em); }
+div.column { flex: auto; overflow-x: auto; }
+*/
+
+/* 懸掛縮排 */
+div.hanging-indent { margin-inline-start: 1.5em; text-indent: -1.5em; }
+
+/* 任務清單 */
+ul.task-list { list-style: none; }
+ul.task-list li input[type="checkbox"] {
+  inline-size: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+
+/* 置中顯示的數學式（直排仍置中） */
+.display.math {
+  display: block;
+  text-align: center;
+  margin: 0.5rem auto;
+}
+
+/* 引號（可按語系調整） */
+q { quotes: "“" "”" "‘" "’"; }
+
+/* Ruby 註音（EPUB/HTML 直排常見需求） */
+ruby { ruby-position: over; }          /* 直排多置於字形外側（等同 over） */
+rt { font-size: 0.6em; }
+ruby, rt { ruby-align: center; }       /* 需閱讀器支援 CSS Ruby Layout */
+/* 有些閱讀器僅部分支援 ruby-align；最基本的是 ruby-position。 */
+
+/* 強調點（如日文圓點），直排時建議放外側 */
+em { font-style: italic; }
+em em, em em em em { font-style: normal; }
+/* 可搭配 text-emphasis，如需要：
+body { text-emphasis-position: under right; }
+*/
+
+/* 螢幕閱讀的 SourceCode 溢位修正（iBooks 舊問題的保留做法） */
+@media screen {
+  .sourceCode {
+    overflow: visible !important;
+    white-space: pre-wrap !important;
+  }
+}
