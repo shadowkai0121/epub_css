@@ -109,11 +109,12 @@ pre code {
 
 /* 分隔線沿直排版心方向的長度與外距 */
 hr {
-  background-color: #1a1a1a;
+  writing-mode: horizontal-tb; /* 避免繼承直排 */
+  width: 1px;
+  height: 90%;   /* 拉長變直線 */
   border: none;
-  inline-size: 1px;
-  block-size: 1em;
-  margin-block: 1em;
+  background-color: black; /* 或使用 border-left */
+  margin: auto;
 }
 
 /* 表格在直排下多半仍以橫排閱讀：給捲動與寬度限制 */
